@@ -15,14 +15,14 @@ namespace Unity.Mathematics
         public IntFloatUnion(float value)
         {
             intValue = 0;
-            floatValue = (float)value;
+            floatValue = value;
         }
 
         [MethodImpl((MethodImplOptions)0x100)] // agressive inline
         public IntFloatUnion(int value)
         {
             floatValue = 0;
-            intValue = (int)value;
+            intValue = value;
         }
 
         [MethodImpl((MethodImplOptions)0x100)] // agressive inline

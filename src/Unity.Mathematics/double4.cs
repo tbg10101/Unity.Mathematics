@@ -7,18 +7,18 @@ using System.Diagnostics;
 
 namespace Unity.Mathematics
 {
-    [DebuggerTypeProxy(typeof(float4.DebuggerProxy))]
+    [DebuggerTypeProxy(typeof(double4.DebuggerProxy))]
     [System.Serializable]
-    public partial struct float4 : IFormattable
+    public partial struct double4 : IFormattable
     {
         internal sealed class DebuggerProxy
         {
-            public float x;
-            public float y;
-            public float z;
-            public float w;
+            public double x;
+            public double y;
+            public double z;
+            public double w;
 
-            public DebuggerProxy(float4 vec)
+            public DebuggerProxy(double4 vec)
             {
                 x = vec.x;
                 y = vec.y;
@@ -27,13 +27,13 @@ namespace Unity.Mathematics
             }
         }
 
-        public float x;
-        public float y;
-        public float z;
-        public float w;
+        public double x;
+        public double y;
+        public double z;
+        public double w;
 
         [MethodImpl((MethodImplOptions)0x100)] // agressive inline
-        public float4(float4 xyzw)
+        public double4(double4 xyzw)
         {
             this.x = xyzw.x;
             this.y = xyzw.y;
@@ -42,7 +42,7 @@ namespace Unity.Mathematics
         }
 
         [MethodImpl((MethodImplOptions)0x100)] // agressive inline
-        public float4(float x, float y, float z, float w)
+        public double4(double x, double y, double z, double w)
         {
             this.x = x;
             this.y = y;
@@ -53,10 +53,10 @@ namespace Unity.Mathematics
 
 
         [MethodImpl((MethodImplOptions)0x100)] // agressive inline
-        public float4(float val) { x = y = z = w = val; }
+        public double4(double val) { x = y = z = w = val; }
 
         [MethodImpl((MethodImplOptions)0x100)] // agressive inline
-        public float4(float2 xy, float2 zw)
+        public double4(double2 xy, double2 zw)
         {
             this.x = xy.x;
             this.y = xy.y;
@@ -65,7 +65,7 @@ namespace Unity.Mathematics
         }
 
         [MethodImpl((MethodImplOptions)0x100)] // agressive inline
-        public float4(float2 xy, float z, float w)
+        public double4(double2 xy, double z, double w)
         {
             this.x = xy.x;
             this.y = xy.y;
@@ -74,7 +74,7 @@ namespace Unity.Mathematics
         }
 
         [MethodImpl((MethodImplOptions)0x100)] // agressive inline
-        public float4(float x, float2 yz, float w)
+        public double4(double x, double2 yz, double w)
         {
             this.x = x;
             this.y = yz.x;
@@ -83,7 +83,7 @@ namespace Unity.Mathematics
         }
 
         [MethodImpl((MethodImplOptions)0x100)] // agressive inline
-        public float4(float x, float3 yzw)
+        public double4(double x, double3 yzw)
         {
             this.x = x;
             this.y = yzw.x;
@@ -92,7 +92,7 @@ namespace Unity.Mathematics
         }
 
         [MethodImpl((MethodImplOptions)0x100)] // agressive inline
-        public float4(float x, float y, float2 zw)
+        public double4(double x, double y, double2 zw)
         {
             this.x = x;
             this.y = y;
@@ -101,7 +101,7 @@ namespace Unity.Mathematics
         }
 
         [MethodImpl((MethodImplOptions)0x100)] // agressive inline
-        public float4(float3 xyz, float w)
+        public double4(double3 xyz, double w)
         {
             this.x = xyz.x;
             this.y = xyz.y;
@@ -110,10 +110,10 @@ namespace Unity.Mathematics
         }
 
         [MethodImpl((MethodImplOptions)0x100)] // agressive inline
-        public float4(int val) { x = y = z = w = val; }
+        public double4(int val) { x = y = z = w = val; }
 
         [MethodImpl((MethodImplOptions)0x100)] // agressive inline
-        public float4(int4 val)
+        public double4(int4 val)
         {
             this.x = val.x;
             this.y = val.y;
@@ -122,7 +122,7 @@ namespace Unity.Mathematics
         }
 
         [MethodImpl((MethodImplOptions)0x100)] // agressive inline
-        public float4(bool4 val)
+        public double4(bool4 val)
         {
             this.x = val.x ? 1.0f : 0.0f;
             this.y = val.y ? 1.0f : 0.0f;
@@ -131,32 +131,33 @@ namespace Unity.Mathematics
         }
 
         [MethodImpl((MethodImplOptions)0x100)] // agressive inline
-        public float4(double4 val)
+        public static implicit operator double4(double d) { return new double4(d); }
+        [MethodImpl((MethodImplOptions)0x100)] // agressive inline
+        public static implicit operator double4(int4 d) { return new double4(d.x, d.y, d.z, d.w); }
+        [MethodImpl((MethodImplOptions)0x100)] // agressive inline
+        public static implicit operator double4(float4 d) { return new double4(d.x, d.y, d.z, d.w); }
+
+        public float4 toFloat4() // loss of precision should be explicit
         {
-            this.x = (float)val.x;
-            this.y = (float)val.y;
-            this.z = (float)val.z;
-            this.w = (float)val.w;
+            return new float4(this);
         }
-
-        [MethodImpl((MethodImplOptions)0x100)] // agressive inline
-        public static implicit operator float4(float d) { return new float4(d); }
-        [MethodImpl((MethodImplOptions)0x100)] // agressive inline
-        public static implicit operator float4(int4 d) { return new float4(d.x, d.y, d.z, d.w); }
-
-        // loss of precision should be explicit
-        // [MethodImpl((MethodImplOptions)0x100)] // agressive inline
-        // public static implicit operator float4(double4 d) { return new float4((float)d.x, (float)d.y, (float)d.z,(float) d.w); }
+        public int4 toInt4() // loss of precision should be explicit
+        {
+            return new int4(this);
+        }
+        public uint4 toUint4() // loss of precision should be explicit
+        {
+            return new uint4(this);
+        }
 
         public override string ToString()
         {
-            return string.Format("float4({0}f, {1}f, {2}f, {3}f)", x, y, z, w);
+            return string.Format("double4({0}f, {1}f, {2}f, {3}f)", x, y, z, w);
         }
 
         public string ToString(string format, IFormatProvider formatProvider)
         {
-            return string.Format("float4({0}f, {1}f, {2}f, {3}f)", x.ToString(format, formatProvider), y.ToString(format, formatProvider), z.ToString(format, formatProvider), w.ToString(format, formatProvider));
+            return string.Format("double4({0}f, {1}f, {2}f, {3}f)", x.ToString(format, formatProvider), y.ToString(format, formatProvider), z.ToString(format, formatProvider), w.ToString(format, formatProvider));
         }
     }
 }
-

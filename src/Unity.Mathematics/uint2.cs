@@ -49,8 +49,14 @@ namespace Unity.Mathematics
         }
 
         [MethodImpl((MethodImplOptions)0x100)] // agressive inline
-        public static implicit operator uint2(uint d) { return new uint2(d); }
+        public uint2(double2 val)
+        {
+            x = (uint)val.x;
+            y = (uint)val.y;
+        }
 
+        [MethodImpl((MethodImplOptions)0x100)] // agressive inline
+        public static implicit operator uint2(uint d) { return new uint2(d); }
         [MethodImpl((MethodImplOptions)0x100)] // agressive inline
         public static explicit operator uint2(float2 d) { return new uint2(d); }
 

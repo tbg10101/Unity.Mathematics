@@ -37,14 +37,21 @@ namespace Unity.Mathematics
         [MethodImpl((MethodImplOptions)0x100)] // agressive inline
         public int2(float2 val)
         {
-            x = (int)val.x;
-            y = (int)val.y;
+            this.x = (int)val.x;
+            this.y = (int)val.y;
+        }
+
+        [MethodImpl((MethodImplOptions)0x100)] // agressive inline
+        public int2(double2 val)
+        {
+            this.x = (int)val.x;
+            this.y = (int)val.y;
         }
 
         [MethodImpl((MethodImplOptions)0x100)] // agressive inline
         public static implicit operator int2(int d) { return new int2(d); }
         [MethodImpl((MethodImplOptions)0x100)] // agressive inline
-        public static explicit operator int2(float2 d) { return new int2((int)d.x, (int)d.y); }
+        public static explicit operator int2(float2 d) { return new int2(d); }
 
         public override string ToString()
         {

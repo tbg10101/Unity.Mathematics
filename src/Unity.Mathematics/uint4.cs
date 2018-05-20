@@ -42,20 +42,47 @@ namespace Unity.Mathematics
         [MethodImpl((MethodImplOptions)0x100)] // agressive inline
         public uint4(uint val) { x = y = z = w = val; }
 
-        // FIXME
+        // FIXME (how?)
         [MethodImpl((MethodImplOptions)0x100)] // agressive inline
-        public uint4(uint3 xyz, uint w) { this.x = xyz.x; this.y = xyz.y; this.z = xyz.z; this.w = w; }
-        
-        [MethodImpl((MethodImplOptions)0x100)] // agressive inline
-        public uint4(int4 val) { x = (uint)val.x; y = (uint)val.y; z = (uint)val.z; w = (uint)val.w; }
+        public uint4 (uint3 xyz, uint w)
+        {
+            this.x = xyz.x;
+            this.y = xyz.y;
+            this.z = xyz.z;
+            this.w = w;
+        }
 
         [MethodImpl((MethodImplOptions)0x100)] // agressive inline
-        public uint4(float4 val) { x = (uint)val.x; y = (uint)val.y; z = (uint)val.z; w = (uint)val.w; }
+        public uint4 (int4 val)
+        {
+            this.x = (uint)val.x;
+            this.y = (uint)val.y;
+            this.z = (uint)val.z;
+            this.w = (uint)val.w;
+        }
+
+        [MethodImpl((MethodImplOptions)0x100)] // agressive inline
+        public uint4 (float4 val)
+        {
+            this.x = (uint)val.x;
+            this.y = (uint)val.y;
+            this.z = (uint)val.z;
+            this.w = (uint)val.w;
+        }
+
+        [MethodImpl((MethodImplOptions)0x100)] // agressive inline
+        public uint4 (double4 val)
+        {
+            this.x = (uint)val.x;
+            this.y = (uint)val.y;
+            this.z = (uint)val.z;
+            this.w = (uint)val.w;
+        }
 
         [MethodImpl((MethodImplOptions)0x100)] // agressive inline
         public static implicit operator uint4(uint d) { return new uint4(d); }
         [MethodImpl((MethodImplOptions)0x100)] // agressive inline
-        public static explicit operator uint4(float4 d) { return new uint4((uint)d.x, (uint)d.y, (uint)d.z, (uint)d.w); }
+        public static explicit operator uint4(float4 d) { return new uint4(d); }
 
         public override string ToString()
         {

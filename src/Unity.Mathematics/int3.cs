@@ -49,15 +49,23 @@ namespace Unity.Mathematics
         [MethodImpl((MethodImplOptions)0x100)] // agressive inline
         public int3(float3 val)
         {
-            x = (int)val.x;
-            y = (int)val.y;
-            z = (int)val.z;
+            this.x = (int)val.x;
+            this.y = (int)val.y;
+            this.z = (int)val.z;
+        }
+
+        [MethodImpl((MethodImplOptions)0x100)] // agressive inline
+        public int3(double3 val)
+        {
+            this.x = (int)val.x;
+            this.y = (int)val.y;
+            this.z = (int)val.z;
         }
 
         [MethodImpl((MethodImplOptions)0x100)] // agressive inline
         public static implicit operator int3(int d) { return new int3(d); }
         [MethodImpl((MethodImplOptions)0x100)] // agressive inline
-        public static explicit operator int3(float3 d) { return new int3((int)d.x, (int)d.y, (int)d.z); }
+        public static explicit operator int3(float3 d) { return new int3(d); }
 
         public override string ToString()
         {

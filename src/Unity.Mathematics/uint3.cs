@@ -55,6 +55,14 @@ namespace Unity.Mathematics
         }
 
         [MethodImpl((MethodImplOptions)0x100)] // agressive inline
+        public uint3(double3 val)
+        {
+            x = (uint)val.x;
+            y = (uint)val.y;
+            z = (uint)val.z;
+        }
+
+        [MethodImpl((MethodImplOptions)0x100)] // agressive inline
         public static implicit operator uint3(uint d) { return new uint3(d); }
         [MethodImpl((MethodImplOptions)0x100)] // agressive inline
         public static explicit operator uint3(float3 d) { return new uint3(d); }

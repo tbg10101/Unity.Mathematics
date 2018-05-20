@@ -42,6 +42,10 @@
 
         public static implicit operator half2(float2 d) { return new half2(d.x, d.y); }
         public static implicit operator float2(half2 d) { return new float2(d.x, d.y); }
+
+        // loss of precision should be explicit
+        // public static implicit operator half2(double2 d) { return new half2(d.x, d.y); }
+        public static implicit operator double2(half2 d) { return new double2(d.x, d.y); }
     }
 
     public struct half3
@@ -59,6 +63,10 @@
 
         public static implicit operator half3(float3 d) { return new half3(d.x, d.y, d.z); }
         public static implicit operator float3(half3 d) { return new float3(d.x, d.y, d.z); }
+
+        // loss of precision should be explicit
+        // public static implicit operator half3(double3 d) { return new half3(d.x, d.y, d.z); }
+        public static implicit operator double3(half3 d) { return new double3(d.x, d.y, d.z); }
     }
 
     public struct half4
@@ -78,6 +86,10 @@
 
         public static implicit operator half4(float4 d) { return new half4(d.x, d.y, d.z, d.w); }
         public static implicit operator float4(half4 d) { return new float4(d.x, d.y, d.z, d.w); }
+
+        // loss of precision should be explicit
+        // public static implicit operator half4(double4 d) { return new half4(d.x, d.y, d.z, d.w); }
+        public static implicit operator double4(half4 d) { return new double4(d.x, d.y, d.z, d.w); }
 
     }
 }

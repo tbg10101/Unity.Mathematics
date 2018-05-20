@@ -20,6 +20,7 @@ namespace Unity.Mathematics.Mathematics.CodeGen
         }
 
         static readonly string[] floatTypes = { "float", "float2", "float3", "float4" };
+        static readonly string[] doubleTypes = { "double", "double2", "double3", "double4" };
         static readonly string[] intTypes = { "int", "int2", "int3", "int4" };
         static readonly string[] uintTypes = { "uint", "uint2", "uint3", "uint4" };
         static readonly string[] boolTypes = { "bool", "bool2", "bool3", "bool4" };
@@ -36,6 +37,7 @@ namespace Unity.Mathematics.Mathematics.CodeGen
         private static readonly GeneratorJob[] s_Jobs = new[]
         {
             new GeneratorJob { indexOperatorReturnType = "float", typeNames = floatTypes, features = Features.Arithmetic | Features.UnaryNegation },
+            new GeneratorJob { indexOperatorReturnType = "double", typeNames = doubleTypes, features = Features.Arithmetic | Features.UnaryNegation },
             new GeneratorJob { indexOperatorReturnType = "int", typeNames = intTypes, features = Features.All },
             new GeneratorJob { indexOperatorReturnType = "uint", typeNames = uintTypes, features = Features.All & ~Features.UnaryNegation },
             new GeneratorJob { indexOperatorReturnType = "bool", typeNames = boolTypes, features = Features.BitwiseLogic },
@@ -313,7 +315,7 @@ namespace Unity.Mathematics.Mathematics.CodeGen
 
         void GenerateSwizzles(int count, StringBuilder str)
         {
-            // float4 swizzles
+            // v4 swizzles
             {
                 int[] swizzles = new int[4];
                 for (int x = 0; x < count; x++)
@@ -336,7 +338,7 @@ namespace Unity.Mathematics.Mathematics.CodeGen
                 }
             }
 
-            // float3 swizzles
+            // v3 swizzles
             {
                 var swizzles = new int[3];
                 for (int x = 0; x < count; x++)
@@ -355,7 +357,7 @@ namespace Unity.Mathematics.Mathematics.CodeGen
                 }
             }
 
-            // float2 swizzles
+            // v2 swizzles
             {
                 var swizzles = new int[2];
                 for (int x = 0; x < count; x++)
@@ -397,7 +399,6 @@ namespace Unity.Mathematics.Mathematics.CodeGen
                 str.Append(components[swizzle[i]]);
 
             // Getter
-
             str.Append("\n\t\t{");
             if (swizzle.Length != 1)
             {
