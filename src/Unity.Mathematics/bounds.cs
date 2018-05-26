@@ -1,15 +1,11 @@
 ﻿using System.Runtime.CompilerServices;
-using static Unity.Mathematics.math;
 
-namespace Unity.Mathematics
-{
-    public struct bounds
-    {
+namespace Unity.Mathematics {
+    public struct bounds {
         private float3 _center;
+
         public float3 center {
-            get {
-                return _center;
-            }
+            get => _center;
             set {
                 _center = value;
 
@@ -19,10 +15,9 @@ namespace Unity.Mathematics
         }
 
         private float3 _extents;
+
         public float3 extents {
-            get {
-                return _extents;
-            }
+            get => _extents;
             set {
                 _extents = value;
 
@@ -34,10 +29,9 @@ namespace Unity.Mathematics
         }
 
         private float3 _size;
+
         public float3 size {
-            get {
-                return _size;
-            }
+            get => _size;
             set {
                 _size = value;
 
@@ -49,20 +43,14 @@ namespace Unity.Mathematics
         }
 
         private float3 _min;
-        public float3 min {
-            get {
-                return _min;
-            }
-        }
+
+        public float3 min => _min;
 
         private float3 _max;
-        public float3 max {
-            get {
-                return _max;
-            }
-        }
 
-        public bounds(float3 center, float3 extents) {
+        public float3 max => _max;
+
+        public bounds (float3 center, float3 extents) {
             _center = center;
             _extents = extents;
             _size = 2.0f * _extents;
@@ -70,7 +58,7 @@ namespace Unity.Mathematics
             _max = _center + _extents;
         }
 
-        public bounds(bounds_d bounds) {
+        public bounds (bounds_d bounds) {
             _center = bounds.center.toFloat3();
             _extents = bounds.extents.toFloat3();
             _size = 2.0f * _extents;
@@ -80,11 +68,11 @@ namespace Unity.Mathematics
 
         public void ConformTo (float3 v0, float3 v1) {
             _center = (v0 + v1) / 2.0f;
-            size = max(v0, v1) - min(v0, v1);
+            size = math.max(v0, v1) - math.min(v0, v1);
         }
 
-        public void ExpandToFit(bounds other) {
-            ConformTo(min(_min, other.min), min(_max, other.max));
+        public void ExpandToFit (bounds other) {
+            ConformTo(math.min(_min, other.min), math.min(_max, other.max));
         }
 
         public bounds ExpandedToFit (bounds other) {
@@ -114,13 +102,11 @@ namespace Unity.Mathematics
         }
     }
 
-    public struct bounds_d
-    {
+    public struct bounds_d {
         private double3 _center;
+
         public double3 center {
-            get {
-                return _center;
-            }
+            get => _center;
             set {
                 _center = value;
 
@@ -130,10 +116,9 @@ namespace Unity.Mathematics
         }
 
         private double3 _extents;
+
         public double3 extents {
-            get {
-                return _extents;
-            }
+            get => _extents;
             set {
                 _extents = value;
 
@@ -145,10 +130,9 @@ namespace Unity.Mathematics
         }
 
         private double3 _size;
+
         public double3 size {
-            get {
-                return _size;
-            }
+            get => _size;
             set {
                 _size = value;
 
@@ -160,20 +144,14 @@ namespace Unity.Mathematics
         }
 
         private double3 _min;
-        public double3 min {
-            get {
-                return _min;
-            }
-        }
+
+        public double3 min => _min;
 
         private double3 _max;
-        public double3 max {
-            get {
-                return _max;
-            }
-        }
 
-        public bounds_d(double3 center, double3 extents) {
+        public double3 max => _max;
+
+        public bounds_d (double3 center, double3 extents) {
             _center = center;
             _extents = extents;
             _size = 2.0 * _extents;
@@ -181,7 +159,7 @@ namespace Unity.Mathematics
             _max = _center + _extents;
         }
 
-        public bounds_d(bounds bounds) {
+        public bounds_d (bounds bounds) {
             _center = bounds.center;
             _extents = bounds.extents;
             _size = 2.0 * _extents;
@@ -189,13 +167,13 @@ namespace Unity.Mathematics
             _max = _center + _extents;
         }
 
-        public void ConformTo(double3 v0, double3 v1) {
+        public void ConformTo (double3 v0, double3 v1) {
             _center = (v0 + v1) / 2.0;
-            size = max(v0, v1) - min(v0, v1);
+            size = math_x.max(v0, v1) - math_x.min(v0, v1);
         }
 
-        public void ExpandToFit(bounds_d other) {
-            ConformTo(min(_min, other.min), min(_max, other.max));
+        public void ExpandToFit (bounds_d other) {
+            ConformTo(math_x.min(_min, other.min), math_x.min(_max, other.max));
         }
 
         public bounds_d ExpandedToFit (bounds_d other) {
@@ -208,8 +186,7 @@ namespace Unity.Mathematics
             return new bounds_d(bounds);
         }
 
-        public bounds toBounds()
-        {
+        public bounds toBounds () {
             return new bounds(this);
         }
 
@@ -234,9 +211,8 @@ namespace Unity.Mathematics
         }
     }
 
-    public static partial class math
-    {
-        [MethodImpl((MethodImplOptions)0x100)] // agressive inline
+    public static partial class math_x {
+        [MethodImpl((MethodImplOptions) 0x100)] // agressive inline
         public static bool intersects (bounds b0, bounds b1) {
             return b0.max.x > b1.min.x
                    && b0.min.x < b1.max.x
@@ -246,7 +222,7 @@ namespace Unity.Mathematics
                    && b0.min.z < b1.max.z;
         }
 
-        [MethodImpl((MethodImplOptions)0x100)] // agressive inline
+        [MethodImpl((MethodImplOptions) 0x100)] // agressive inline
         public static bool intersects (bounds_d b0, bounds_d b1) {
             return b0.max.x > b1.min.x
                    && b0.min.x < b1.max.x
@@ -256,16 +232,52 @@ namespace Unity.Mathematics
                    && b0.min.z < b1.max.z;
         }
 
-        [MethodImpl((MethodImplOptions)0x100)] // agressive inline
-        public static bool equal(bounds b0, bounds b1)
-        {
-            return all(equal(b0.center, b1.center) & equal(b0.extents, b1.extents));
+        [MethodImpl((MethodImplOptions) 0x100)] // agressive inline
+        public static bool equal (bounds b0, bounds b1) {
+            return math.all(math.equal(b0.center, b1.center) & math.equal(b0.extents, b1.extents));
         }
 
-        [MethodImpl((MethodImplOptions)0x100)] // agressive inline
-        public static bool equal(bounds_d b0, bounds_d b1)
-        {
-            return all(equal(b0.center, b1.center) & equal(b0.extents, b1.extents));
+        [MethodImpl((MethodImplOptions) 0x100)] // agressive inline
+        public static bool equal (bounds_d b0, bounds_d b1) {
+            return math.all(equal(b0.center, b1.center) & equal(b0.extents, b1.extents));
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
