@@ -77,6 +77,11 @@ namespace Unity.Mathematics {
             return new double3(d.x, d.y, d.z);
         }
 
+        [MethodImpl((MethodImplOptions) 0x100)] // agressive inline
+        public static implicit operator double3 (Vector3 d) {
+            return new double3(d.x, d.y, d.z);
+        }
+
         public float3 toFloat3 () { // loss of precision should be explicit
             return new float3((float) x, (float) y, (float) z);
         }
