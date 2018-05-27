@@ -1,10 +1,16 @@
 ﻿using System;
 using Unity.Mathematics.Experimental;
+using UnityEngine;
 
 namespace Unity.Mathematics {
     [Serializable]
     public struct quaternion_d {
         public double4 value;
+
+        public double x => value.x;
+        public double y => value.y;
+        public double z => value.z;
+        public double w => value.w;
 
         public quaternion_d (double x, double y, double z, double w) {
             value.x = x;
@@ -19,13 +25,36 @@ namespace Unity.Mathematics {
 
         public static quaternion_d identity => new quaternion_d(0.0, 0.0, 0.0, 1.0);
 
+        public static double3 operator *(quaternion_d rotation, double3 point) {
+            double num1 = rotation.x * 2f;
+            double num2 = rotation.y * 2f;
+            double num3 = rotation.z * 2f;
+            double num4 = rotation.x * num1;
+            double num5 = rotation.y * num2;
+            double num6 = rotation.z * num3;
+            double num7 = rotation.x * num2;
+            double num8 = rotation.x * num3;
+            double num9 = rotation.y * num3;
+            double num10 = rotation.w * num1;
+            double num11 = rotation.w * num2;
+            double num12 = rotation.w * num3;
+
+            return new double3(
+                (1.0 - (num5 + num6)) * point.x + (num7 - num12) * point.y + (num8 + num11) * point.z,
+                (num7 + num12) * point.x + (1.0 - (num4 + num6)) * point.y + (num9 - num10) * point.z,
+                (num8 - num11) * point.x + (num9 + num10) * point.y + (1.0 - (num4 + num5)) * point.z);
+        }
+
         public static implicit operator quaternion_d (quaternion q) {
             return new quaternion_d(q.value);
         }
 
-        // loss of precision should be explicit
-        public quaternion toQuaternion () {
+        public quaternion toQuaternion () { // loss of precision should be explicit
             return new quaternion(value.toFloat4());
+        }
+
+        public Quaternion toEngineQuaternion () {
+            return new Quaternion((float) x, (float) y, (float) z, (float) w);
         }
     }
 
@@ -136,11 +165,13 @@ namespace Unity.Mathematics {
         }
 
         public static quaternion_d euler (double3 eulerInDegrees) {
-            throw new NotImplementedException();
+            return euler(eulerInDegrees.x, eulerInDegrees.y, eulerInDegrees.z);
         }
 
         public static quaternion_d euler (double x, double y, double z) {
-            throw new NotImplementedException();
+            // TODO
+            Quaternion q = Quaternion.Euler((float) x, (float) y, (float) z);
+            return new quaternion_d(q.x, q.y, q.z, q.w);
         }
 
         //@TODO: Decide on saturate for t (old math lib did it...)

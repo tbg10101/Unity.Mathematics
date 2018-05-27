@@ -134,18 +134,15 @@ namespace Unity.Mathematics {
             return new double4(d.x, d.y, d.z, d.w);
         }
 
-        public float4 toFloat4 () // loss of precision should be explicit
-        {
+        public float4 toFloat4 () { // loss of precision should be explicit
             return new float4((float) x, (float) y, (float) z, (float) w);
         }
 
-        public int4 toInt4 () // loss of precision should be explicit
-        {
+        public int4 toInt4 () { // loss of precision should be explicit
             return new int4((int) x, (int) y, (int) z, (int) w);
         }
 
-        public uint4 toUint4 () // loss of precision should be explicit
-        {
+        public uint4 toUint4 () { // loss of precision should be explicit
             return new uint4((uint) x, (uint) y, (uint) z, (uint) w);
         }
 

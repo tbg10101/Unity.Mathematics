@@ -1,4 +1,6 @@
-﻿namespace Unity.Mathematics {
+﻿using UnityEngine;
+
+namespace Unity.Mathematics {
     public struct ray {
         public float3 origin;
         public float3 direction;
@@ -13,6 +15,10 @@
         public ray (ray_d r) {
             origin = r.origin.toFloat3();
             direction = r.direction.toFloat3();
+        }
+
+        public static implicit operator ray (Ray r) {
+            return new ray(r.origin, r.direction);
         }
     }
 
@@ -37,9 +43,12 @@
             return new ray_d(r);
         }
 
-        // loss of precision should be explicit
-        public ray toRay () {
+        public ray toRay () { // loss of precision should be explicit
             return new ray(this);
+        }
+
+        public static implicit operator ray_d (Ray r) {
+            return new ray_d(new double3(r.origin.x, r.origin.y, r.origin.z), new double3(r.direction.x, r.direction.y, r.direction.z));
         }
     }
 

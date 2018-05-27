@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using UnityEngine;
 
 #pragma warning disable 0660, 0661
 namespace Unity.Mathematics {
@@ -76,19 +77,20 @@ namespace Unity.Mathematics {
             return new double3(d.x, d.y, d.z);
         }
 
-        public float3 toFloat3 () // loss of precision should be explicit
-        {
+        public float3 toFloat3 () { // loss of precision should be explicit
             return new float3((float) x, (float) y, (float) z);
         }
 
-        public int3 toInt3 () // loss of precision should be explicit
-        {
+        public int3 toInt3 () { // loss of precision should be explicit
             return new int3((int) x, (int) y, (int) z);
         }
 
-        public uint3 toUint3 () // loss of precision should be explicit
-        {
+        public uint3 toUint3 () { // loss of precision should be explicit
             return new uint3((uint) x, (uint) y, (uint) z);
+        }
+
+        public Vector3 toVector3 () { // loss of precision should be explicit
+            return new Vector3((float) x, (float) y, (float) z);
         }
 
         public override string ToString () {

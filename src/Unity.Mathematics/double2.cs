@@ -58,18 +58,15 @@ namespace Unity.Mathematics {
             return new double2(d.x, d.y);
         }
 
-        public float2 toFloat2 () // loss of precision should be explicit
-        {
+        public float2 toFloat2 () { // loss of precision should be explicit
             return new float2((float) x, (float) y);
         }
 
-        public int2 toInt2 () // loss of precision should be explicit
-        {
+        public int2 toInt2 () { // loss of precision should be explicit
             return new int2((int) x, (int) y);
         }
 
-        public uint2 toUint2 () // loss of precision should be explicit
-        {
+        public uint2 toUint2 () { // loss of precision should be explicit
             return new uint2((uint) x, (uint) y);
         }
 
