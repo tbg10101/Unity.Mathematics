@@ -164,14 +164,24 @@ namespace Unity.Mathematics {
 			return new quaternion_d {value = new double4(axisUnit.x * sina, axisUnit.y * sina, axisUnit.z * sina, cosa)};
 		}
 
-		public static quaternion_d euler (double3 eulerInDegrees) {
-			return euler(eulerInDegrees.x, eulerInDegrees.y, eulerInDegrees.z);
+		public static quaternion_d euler_d (double3 eulerInDegrees) {
+			return euler_d(eulerInDegrees.x, eulerInDegrees.y, eulerInDegrees.z);
 		}
 
-		public static quaternion_d euler (double x, double y, double z) {
+		public static quaternion_d euler_d (double x, double y, double z) {
 			// TODO
 			Quaternion q = Quaternion.Euler((float) x, (float) y, (float) z);
 			return new quaternion_d(q.x, q.y, q.z, q.w);
+		}
+
+		public static quaternion euler (float3 eulerInDegrees) {
+			return euler(eulerInDegrees.x, eulerInDegrees.y, eulerInDegrees.z);
+		}
+
+		public static quaternion euler (float x, float y, float z) {
+			// TODO
+			Quaternion q = Quaternion.Euler(x,  y, z);
+			return new quaternion(q.x, q.y, q.z, q.w);
 		}
 
 		//@TODO: Decide on saturate for t (old math lib did it...)

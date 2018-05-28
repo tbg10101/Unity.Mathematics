@@ -5,6 +5,7 @@
 
 using System;
 using System.Runtime.CompilerServices;
+using UnityEngine;
 
 namespace Unity.Mathematics {
     public static partial class math_x {
@@ -1390,6 +1391,10 @@ namespace Unity.Mathematics {
         public static float3 closestSegmentToSegmentMidPoint (float3 line1p0, float3 line1p1, float3 line2p0, float3 line2p1) {
             float3[] points = closestPointsOnSegments(line1p0, line1p1, line2p0, line2p1);
             return avg(points[0], points[1]);
+        }
+
+        public static float4 toFloat4(this Color c) {
+            return new float4(c.r, c.g, c.b, c.a);
         }
     }
 }
