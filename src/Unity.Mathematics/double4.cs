@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using UnityEngine;
 
 #pragma warning disable 0660, 0661
 
@@ -42,8 +43,6 @@ namespace Unity.Mathematics {
             this.z = z;
             this.w = w;
         }
-
-
 
         [MethodImpl((MethodImplOptions) 0x100)] // agressive inline
         public double4 (double val) {
@@ -131,6 +130,11 @@ namespace Unity.Mathematics {
 
         [MethodImpl((MethodImplOptions) 0x100)] // agressive inline
         public static implicit operator double4 (float4 d) {
+            return new double4(d.x, d.y, d.z, d.w);
+        }
+
+        [MethodImpl((MethodImplOptions) 0x100)] // agressive inline
+        public static implicit operator double4 (Vector4 d) {
             return new double4(d.x, d.y, d.z, d.w);
         }
 

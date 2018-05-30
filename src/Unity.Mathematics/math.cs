@@ -371,6 +371,10 @@ namespace Unity.Mathematics {
             return new double4(floor(a.x), floor(a.y), floor(a.z), floor(a.w));
         }
 
+        public static int floorToInt (double a) {
+            return (int)Math.Floor(a);
+        }
+
         // ceil
         public static double ceil (double a) {
             return Math.Ceiling(a);
@@ -386,6 +390,10 @@ namespace Unity.Mathematics {
 
         public static double4 ceil (double4 a) {
             return new double4(ceil(a.x), ceil(a.y), ceil(a.z), ceil(a.w));
+        }
+
+        public static int ceilToInt (double a) {
+            return (int)Math.Ceiling(a);
         }
 
         // round
@@ -529,6 +537,10 @@ namespace Unity.Mathematics {
         }
 
         // log
+        public static double log (double b, double x) {
+            return Math.Log(x, b);
+        }
+
         public static double log (double x) {
             return Math.Log(x);
         }

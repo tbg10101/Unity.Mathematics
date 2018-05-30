@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using UnityEngine;
 
 #pragma warning disable 0660, 0661
 
@@ -55,6 +56,11 @@ namespace Unity.Mathematics {
 
         [MethodImpl((MethodImplOptions) 0x100)] // agressive inline
         public static implicit operator double2 (float2 d) {
+            return new double2(d.x, d.y);
+        }
+
+        [MethodImpl((MethodImplOptions) 0x100)] // agressive inline
+        public static implicit operator double2 (Vector2 d) {
             return new double2(d.x, d.y);
         }
 
