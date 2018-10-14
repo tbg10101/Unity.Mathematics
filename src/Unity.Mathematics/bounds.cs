@@ -1,11 +1,14 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace Unity.Mathematics {
-    public struct bounds {
+#pragma warning disable 659
+    public struct bounds : IEquatable<bounds> {
         private float3 _center;
-
         public float3 center {
-            get => _center;
+            get {
+                return _center;
+            }
             set {
                 _center = value;
 
@@ -15,9 +18,10 @@ namespace Unity.Mathematics {
         }
 
         private float3 _extents;
-
         public float3 extents {
-            get => _extents;
+            get {
+                return _extents;
+            }
             set {
                 _extents = value;
 
@@ -29,9 +33,10 @@ namespace Unity.Mathematics {
         }
 
         private float3 _size;
-
         public float3 size {
-            get => _size;
+            get {
+                return _size;
+            }
             set {
                 _size = value;
 
@@ -53,14 +58,6 @@ namespace Unity.Mathematics {
         public bounds (float3 center, float3 extents) {
             _center = center;
             _extents = extents;
-            _size = 2.0f * _extents;
-            _min = _center - _extents;
-            _max = _center + _extents;
-        }
-
-        public bounds (bounds_d bounds) {
-            _center = bounds.center.toFloat3();
-            _extents = bounds.extents.toFloat3();
             _size = 2.0f * _extents;
             _min = _center - _extents;
             _max = _center + _extents;
@@ -100,13 +97,26 @@ namespace Unity.Mathematics {
             newBounds.ConformTo(v0, v1);
             return newBounds;
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals (bounds other) {
+            return _center.Equals(other._center) && _extents.Equals(other._extents);
+        }
+
+        public override bool Equals (object obj) {
+            if (ReferenceEquals(null, obj)) return false;
+            return obj is bounds && Equals((bounds) obj);
+        }
     }
+#pragma warning restore 659
 
-    public struct bounds_d {
+#pragma warning disable 659
+    public struct bounds_d : IEquatable<bounds_d> {
         private double3 _center;
-
         public double3 center {
-            get => _center;
+            get {
+                return _center;
+            }
             set {
                 _center = value;
 
@@ -116,9 +126,10 @@ namespace Unity.Mathematics {
         }
 
         private double3 _extents;
-
         public double3 extents {
-            get => _extents;
+            get {
+                return _extents;
+            }
             set {
                 _extents = value;
 
@@ -130,9 +141,10 @@ namespace Unity.Mathematics {
         }
 
         private double3 _size;
-
         public double3 size {
-            get => _size;
+            get {
+                return _size;
+            }
             set {
                 _size = value;
 
@@ -169,11 +181,11 @@ namespace Unity.Mathematics {
 
         public void ConformTo (double3 v0, double3 v1) {
             _center = (v0 + v1) / 2.0;
-            size = math_x.max(v0, v1) - math_x.min(v0, v1);
+            size = math.max(v0, v1) - math.min(v0, v1);
         }
 
         public void ExpandToFit (bounds_d other) {
-            ConformTo(math_x.min(_min, other.min), math_x.min(_max, other.max));
+            ConformTo(math.min(_min, other.min), math.min(_max, other.max));
         }
 
         public bounds_d ExpandedToFit (bounds_d other) {
@@ -186,8 +198,8 @@ namespace Unity.Mathematics {
             return new bounds_d(bounds);
         }
 
-        public bounds toBounds () {
-            return new bounds(this);
+        public bounds toBounds () { // loss of precision should be explicit
+            return new bounds(_center.toFloat3(), _extents.toFloat3());
         }
 
         public static bounds_d FromCenterAndSize (double3 center, double3 size) {
@@ -209,10 +221,29 @@ namespace Unity.Mathematics {
             newBounds.ConformTo(v0, v1);
             return newBounds;
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals (bounds_d other) {
+            return _center.Equals(other._center) && _extents.Equals(other._extents);
+        }
+
+        public override bool Equals (object obj) {
+            if (ReferenceEquals(null, obj)) return false;
+            return obj is bounds_d && Equals((bounds_d) obj);
+        }
     }
+#pragma warning restore 659
 
     public static partial class math_x {
-        [MethodImpl((MethodImplOptions) 0x100)] // agressive inline
+        public static bounds bounds (float3 center, float3 extends) {
+            return new bounds(center, extends);
+        }
+
+        public static bounds_d bounds_d (double3 center, double3 extends) {
+            return new bounds_d(center, extends);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool intersects (bounds b0, bounds b1) {
             return b0.max.x > b1.min.x
                    && b0.min.x < b1.max.x
@@ -222,7 +253,7 @@ namespace Unity.Mathematics {
                    && b0.min.z < b1.max.z;
         }
 
-        [MethodImpl((MethodImplOptions) 0x100)] // agressive inline
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool intersects (bounds_d b0, bounds_d b1) {
             return b0.max.x > b1.min.x
                    && b0.min.x < b1.max.x
@@ -230,16 +261,6 @@ namespace Unity.Mathematics {
                    && b0.min.y < b1.max.y
                    && b0.max.z > b1.min.z
                    && b0.min.z < b1.max.z;
-        }
-
-        [MethodImpl((MethodImplOptions) 0x100)] // agressive inline
-        public static bool equal (bounds b0, bounds b1) {
-            return math.all(math.equal(b0.center, b1.center) & math.equal(b0.extents, b1.extents));
-        }
-
-        [MethodImpl((MethodImplOptions) 0x100)] // agressive inline
-        public static bool equal (bounds_d b0, bounds_d b1) {
-            return math.all(equal(b0.center, b1.center) & equal(b0.extents, b1.extents));
         }
     }
 }

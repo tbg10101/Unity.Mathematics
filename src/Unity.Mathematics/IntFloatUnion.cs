@@ -10,24 +10,24 @@ namespace Unity.Mathematics {
         [FieldOffset(0)]
         public float floatValue;
 
-        [MethodImpl((MethodImplOptions) 0x100)] // agressive inline
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IntFloatUnion (float value) {
             intValue = 0;
             floatValue = value;
         }
 
-        [MethodImpl((MethodImplOptions) 0x100)] // agressive inline
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IntFloatUnion (int value) {
             floatValue = 0;
             intValue = value;
         }
 
-        [MethodImpl((MethodImplOptions) 0x100)] // agressive inline
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int ToInt (float value) {
             return new IntFloatUnion(value).intValue;
         }
 
-        [MethodImpl((MethodImplOptions) 0x100)] // agressive inline
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float ToFloat (int value) {
             return new IntFloatUnion(value).floatValue;
         }

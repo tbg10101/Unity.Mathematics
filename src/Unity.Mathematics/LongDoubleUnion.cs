@@ -10,24 +10,24 @@ namespace Unity.Mathematics {
         [FieldOffset(0)]
         public double doubleValue;
 
-        [MethodImpl((MethodImplOptions) 0x100)] // agressive inline
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public LongDoubleUnion (double value) {
             longValue = 0;
             doubleValue = value;
         }
 
-        [MethodImpl((MethodImplOptions) 0x100)] // agressive inline
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public LongDoubleUnion (long value) {
             doubleValue = 0;
             longValue = value;
         }
 
-        [MethodImpl((MethodImplOptions) 0x100)] // agressive inline
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long ToLong (double value) {
             return new LongDoubleUnion(value).longValue;
         }
 
-        [MethodImpl((MethodImplOptions) 0x100)] // agressive inline
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double ToDouble (long value) {
             return new LongDoubleUnion(value).doubleValue;
         }
