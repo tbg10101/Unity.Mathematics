@@ -20,6 +20,12 @@ namespace Unity.Mathematics {
 		private const double epsilon_d = 0.000001;
 		public const double epsilon_normal_d = 1e-30;
 
+		// mul
+		public static double3 mul (quaternion q, double3 v) {
+			double3 t = 2.0 * cross(q.value.xyz, v);
+			return v + q.value.w * t + cross(q.value.xyz, t);
+		}
+
 		// floorToInt
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static int floorToInt (float x) {
