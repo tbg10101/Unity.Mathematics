@@ -21,6 +21,7 @@ namespace Unity.Mathematics {
 		public const double epsilon_normal_d = 1e-30;
 
 		// mul
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static double3 mul (quaternion q, double3 v) {
 			double3 t = 2.0 * cross(q.value.xyz, v);
 			return v + q.value.w * t + cross(q.value.xyz, t);
