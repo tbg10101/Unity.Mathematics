@@ -1,5 +1,4 @@
 ﻿using System;
-using Unity.Mathematics.Experimental;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using static Unity.Mathematics.math;
@@ -7,7 +6,8 @@ using static Unity.Mathematics.math_x;
 
 namespace Unity.Mathematics {
 	[Serializable]
-	public partial struct quaternion_d {
+	public struct quaternion_d : IEquatable<quaternion_d>, IFormattable {
+		public static readonly quaternion_d identity = new quaternion_d(0.0, 0.0, 0.0, 1.0);
 		public double4 value;
 
 		public quaternion_d (double x, double y, double z, double w) {
@@ -27,18 +27,18 @@ namespace Unity.Mathematics {
 			double3 v = m.c1;
 			double3 w = m.c2;
 
-			if (u.x >= 0f) {
+			if (u.x >= 0.0) {
 				double t = v.y + w.z;
-				if (t >= 0f)
-					value = double4(v.z - w.y, w.x - u.z, u.y - v.x, 1f + u.x + t);
+				if (t >= 0.0)
+					value = double4(v.z - w.y, w.x - u.z, u.y - v.x, 1.0 + u.x + t);
 				else
-					value = new double4(1f + u.x - t, u.y + v.x, w.x + u.z, v.z - w.y);
+					value = new double4(1.0 + u.x - t, u.y + v.x, w.x + u.z, v.z - w.y);
 			} else {
 				double t = v.y - w.z;
-				if (t >= 0f)
-					value = new double4(u.y + v.x, 1f - u.x + t, v.z + w.y, w.x - u.z);
+				if (t >= 0.0)
+					value = new double4(u.y + v.x, 1.0 - u.x + t, v.z + w.y, w.x - u.z);
 				else
-					value = new double4(w.x + u.z, v.z + w.y, 1f - u.x - t, u.y - v.x);
+					value = new double4(w.x + u.z, v.z + w.y, 1.0 - u.x - t, u.y - v.x);
 			}
 
 			value = normalize(value);
@@ -50,218 +50,178 @@ namespace Unity.Mathematics {
 			double4 v = m.c1;
 			double4 w = m.c2;
 
-			if (u.x >= 0f) {
+			if (u.x >= 0.0) {
 				double t = v.y + w.z;
-				if (t >= 0f)
-					value = double4(v.z - w.y, w.x - u.z, u.y - v.x, 1f + u.x + t);
+				if (t >= 0.0)
+					value = double4(v.z - w.y, w.x - u.z, u.y - v.x, 1.0 + u.x + t);
 				else
-					value = double4(1f + u.x - t, u.y + v.x, w.x + u.z, v.z - w.y);
+					value = double4(1.0 + u.x - t, u.y + v.x, w.x + u.z, v.z - w.y);
 			} else {
 				double t = v.y - w.z;
-				if (t >= 0f)
-					value = double4(u.y + v.x, 1f - u.x + t, v.z + w.y, w.x - u.z);
+				if (t >= 0.0)
+					value = double4(u.y + v.x, 1.0 - u.x + t, v.z + w.y, w.x - u.z);
 				else
-					value = double4(w.x + u.z, v.z + w.y, 1f - u.x - t, u.y - v.x);
+					value = double4(w.x + u.z, v.z + w.y, 1.0 - u.x - t, u.y - v.x);
 			}
 
 			value = normalize(value);
 		}
 
-		public static readonly quaternion_d identity = new quaternion_d(0.0f, 0.0f, 0.0f, 1.0f);
-
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static quaternion_d axisAngle (double3 axis, double angle) {
-			double sina, cosa;
-			sincos(0.5 * angle, out sina, out cosa);
-			return quaternion_d(double4(normalize(axis) * sina, cosa));
+		public static quaternion_d AxisAngle (double3 axis, double angle) {
+			double s;
+			double c;
+			sincos(0.5 * angle, out s, out c);
+			return quaternion_d(double4(axis * s, c));
 		}
 
-		public static quaternion_d eulerXYZ (double3 xyz) {
-			// return mul(rotateZ(xyz.z), mul(rotateY(xyz.y), rotateX(xyz.x)));
-			double3 s, c;
+		public static quaternion_d EulerXYZ (double3 xyz) {
+			double3 s;
+			double3 c;
 			sincos(0.5 * xyz, out s, out c);
 			return quaternion_d(
-				// s.x * c.y * c.z - s.y * s.z * c.x,
-				// s.y * c.x * c.z + s.x * s.z * c.y,
-				// s.z * c.x * c.y - s.x * s.y * c.z,
-				// c.x * c.y * c.z + s.y * s.z * s.x
-				double4(s.xyz, c.x) * c.yxxy * c.zzyz + s.yxxy * s.zzyz * double4(c.xyz, s.x) * double4(-1.0f, 1.0f, -1.0f, 1.0f)
-			);
+				double4(s.xyz, c.x) * c.yxxy * c.zzyz + s.yxxy * s.zzyz * double4(c.xyz, s.x) * double4(-1.0, 1.0, -1.0, 1.0));
 		}
 
-		public static quaternion_d eulerXZY (double3 xyz) {
-			// return mul(rotateY(xyz.y), mul(rotateZ(xyz.z), rotateX(xyz.x)));
-			double3 s, c;
-			sincos(0.5f * xyz, out s, out c);
+		public static quaternion_d EulerXZY (double3 xyz) {
+			double3 s;
+			double3 c;
+			sincos(0.5 * xyz, out s, out c);
 			return quaternion_d(
-				// s.x * c.y * c.z + s.y * s.z * c.x,
-				// s.y * c.x * c.z + s.x * s.z * c.y,
-				// s.z * c.x * c.y - s.x * s.y * c.z,
-				// c.x * c.y * c.z - s.y * s.z * s.x
-				double4(s.xyz, c.x) * c.yxxy * c.zzyz + s.yxxy * s.zzyz * double4(c.xyz, s.x) * double4(1.0f, 1.0f, -1.0f, -1.0f)
-			);
+				double4(s.xyz, c.x) * c.yxxy * c.zzyz + s.yxxy * s.zzyz * double4(c.xyz, s.x) * double4(1.0, 1.0, -1.0, -1.0));
 		}
 
-		public static quaternion_d eulerYXZ (double3 xyz) {
-			// return mul(rotateZ(xyz.z), mul(rotateX(xyz.x), rotateY(xyz.y)));
-			double3 s, c;
-			sincos(0.5f * xyz, out s, out c);
+		public static quaternion_d EulerYXZ (double3 xyz) {
+			double3 s;
+			double3 c;
+			sincos(0.5 * xyz, out s, out c);
 			return quaternion_d(
-				// s.x * c.y * c.z - s.y * s.z * c.x,
-				// s.y * c.x * c.z + s.x * s.z * c.y,
-				// s.z * c.x * c.y + s.x * s.y * c.z,
-				// c.x * c.y * c.z - s.y * s.z * s.x
-				double4(s.xyz, c.x) * c.yxxy * c.zzyz + s.yxxy * s.zzyz * double4(c.xyz, s.x) * double4(-1.0f, 1.0f, 1.0f, -1.0f)
-			);
+				double4(s.xyz, c.x) * c.yxxy * c.zzyz + s.yxxy * s.zzyz * double4(c.xyz, s.x) * double4(-1.0, 1.0, 1.0, -1.0));
 		}
 
-		public static quaternion_d eulerYZX (double3 xyz) {
-			// return mul(rotateX(xyz.x), mul(rotateZ(xyz.z), rotateY(xyz.y)));
-			double3 s, c;
-			sincos(0.5f * xyz, out s, out c);
+		public static quaternion_d EulerYZX (double3 xyz) {
+			double3 s;
+			double3 c;
+			sincos(0.5 * xyz, out s, out c);
 			return quaternion_d(
-				// s.x * c.y * c.z - s.y * s.z * c.x,
-				// s.y * c.x * c.z - s.x * s.z * c.y,
-				// s.z * c.x * c.y + s.x * s.y * c.z,
-				// c.x * c.y * c.z + s.y * s.z * s.x
-				double4(s.xyz, c.x) * c.yxxy * c.zzyz + s.yxxy * s.zzyz * double4(c.xyz, s.x) * double4(-1.0f, -1.0f, 1.0f, 1.0f)
-			);
+				double4(s.xyz, c.x) * c.yxxy * c.zzyz + s.yxxy * s.zzyz * double4(c.xyz, s.x) * double4(-1.0, -1.0, 1.0, 1.0));
 		}
 
-		public static quaternion_d eulerZXY (double3 xyz) {
-			// return mul(rotateY(xyz.y), mul(rotateX(xyz.x), rotateZ(xyz.z)));
-			double3 s, c;
-			sincos(0.5f * xyz, out s, out c);
+		public static quaternion_d EulerZXY (double3 xyz) {
+			double3 s;
+			double3 c;
+			sincos(0.5 * xyz, out s, out c);
 			return quaternion_d(
-				// s.x * c.y * c.z + s.y * s.z * c.x,
-				// s.y * c.x * c.z - s.x * s.z * c.y,
-				// s.z * c.x * c.y - s.x * s.y * c.z,
-				// c.x * c.y * c.z + s.y * s.z * s.x
-				double4(s.xyz, c.x) * c.yxxy * c.zzyz + s.yxxy * s.zzyz * double4(c.xyz, s.x) * double4(1.0f, -1.0f, -1.0f, 1.0f)
-			);
+				double4(s.xyz, c.x) * c.yxxy * c.zzyz + s.yxxy * s.zzyz * double4(c.xyz, s.x) * double4(1.0, -1.0, -1.0, 1.0));
 		}
 
-		public static quaternion_d eulerZYX (double3 xyz) {
-			// return mul(rotateX(xyz.x), mul(rotateY(xyz.y), rotateZ(xyz.z)));
-			double3 s, c;
-			sincos(0.5f * xyz, out s, out c);
+		public static quaternion_d EulerZYX (double3 xyz) {
+			double3 s;
+			double3 c;
+			sincos(0.5 * xyz, out s, out c);
 			return quaternion_d(
-				// s.x * c.y * c.z + s.y * s.z * c.x,
-				// s.y * c.x * c.z - s.x * s.z * c.y,
-				// s.z * c.x * c.y + s.x * s.y * c.z,
-				// c.x * c.y * c.z - s.y * s.x * s.z
-				double4(s.xyz, c.x) * c.yxxy * c.zzyz + s.yxxy * s.zzyz * double4(c.xyz, s.x) * double4(1.0f, -1.0f, 1.0f, -1.0f)
-			);
+				double4(s.xyz, c.x) * c.yxxy * c.zzyz + s.yxxy * s.zzyz * double4(c.xyz, s.x) * double4(1.0, -1.0, 1.0, -1.0));
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static quaternion_d eulerXYZ (double x, double y, double z) {
-			return eulerXYZ(double3(x, y, z));
+		public static quaternion_d EulerXYZ (double x, double y, double z) {
+			return EulerXYZ(double3(x, y, z));
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static quaternion_d eulerXZY (double x, double y, double z) {
-			return eulerXZY(double3(x, y, z));
+		public static quaternion_d EulerXZY (double x, double y, double z) {
+			return EulerXZY(double3(x, y, z));
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static quaternion_d eulerYXZ (double x, double y, double z) {
-			return eulerYXZ(double3(x, y, z));
+		public static quaternion_d EulerYXZ (double x, double y, double z) {
+			return EulerYXZ(double3(x, y, z));
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static quaternion_d eulerYZX (double x, double y, double z) {
-			return eulerYZX(double3(x, y, z));
+		public static quaternion_d EulerYZX (double x, double y, double z) {
+			return EulerYZX(double3(x, y, z));
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static quaternion_d eulerZXY (double x, double y, double z) {
-			return eulerZXY(double3(x, y, z));
+		public static quaternion_d EulerZXY (double x, double y, double z) {
+			return EulerZXY(double3(x, y, z));
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static quaternion_d eulerZYX (double x, double y, double z) {
-			return eulerZYX(double3(x, y, z));
+		public static quaternion_d EulerZYX (double x, double y, double z) {
+			return EulerZYX(double3(x, y, z));
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static quaternion_d euler (double x, double y, double z) {
-			return eulerZYX(double3(x, y, z));
-		}
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static quaternion_d rotateX (double angle) {
-			double sina, cosa;
-			sincos(0.5 * angle, out sina, out cosa);
-			return quaternion_d(sina, 0.0, 0.0, cosa);
-		}
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static quaternion_d rotateY (double angle) {
-			double sina, cosa;
-			sincos(0.5 * angle, out sina, out cosa);
-			return quaternion_d(0.0, sina, 0.0, cosa);
-		}
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static quaternion_d rotateZ (double angle) {
-			double sina, cosa;
-			sincos(0.5 * angle, out sina, out cosa);
-			return quaternion_d(0.0, 0.0, sina, cosa);
-		}
-
-		public static quaternion_d lookRotation (double3 direction, double3 up) {
-			var vector = math_experimental_x.normalizeSafe(direction);
-			var vector2 = cross(up, vector);
-			var vector3 = cross(vector, vector2);
-			var m00 = vector2.x;
-			var m01 = vector2.y;
-			var m02 = vector2.z;
-			var m10 = vector3.x;
-			var m11 = vector3.y;
-			var m12 = vector3.z;
-			var m20 = vector.x;
-			var m21 = vector.y;
-			var m22 = vector.z;
-			var num8 = (m00 + m11) + m22;
-			double4 q;
-			if (num8 > 0.0) {
-				var num = sqrt(num8 + 1.0);
-				q.w = num * 0.5;
-				num = 0.5 / num;
-				q.x = (m12 - m21) * num;
-				q.y = (m20 - m02) * num;
-				q.z = (m01 - m10) * num;
-				return quaternion_d(q);
+		public static quaternion_d Euler (double3 xyz, RotationOrder order = RotationOrder.ZXY) {
+			switch (order) {
+				case RotationOrder.XYZ:
+					return EulerXYZ(xyz);
+				case RotationOrder.XZY:
+					return EulerXZY(xyz);
+				case RotationOrder.YXZ:
+					return EulerYXZ(xyz);
+				case RotationOrder.YZX:
+					return EulerYZX(xyz);
+				case RotationOrder.ZXY:
+					return EulerZXY(xyz);
+				case RotationOrder.ZYX:
+					return EulerZYX(xyz);
+				default:
+					return identity;
 			}
+		}
 
-			if ((m00 >= m11) && (m00 >= m22)) {
-				var num7 = sqrt(((1.0 + m00) - m11) - m22);
-				var num4 = 0.5 / num7;
-				q.x = 0.5 * num7;
-				q.y = (m01 + m10) * num4;
-				q.z = (m02 + m20) * num4;
-				q.w = (m12 - m21) * num4;
-				return quaternion_d(q);
-			}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static quaternion_d Euler (double x, double y, double z, RotationOrder order = RotationOrder.ZXY) {
+			return Euler(double3(x, y, z), order);
+		}
 
-			if (m11 > m22) {
-				var num6 = sqrt(((1.0 + m11) - m00) - m22);
-				var num3 = 0.5 / num6;
-				q.x = (m10 + m01) * num3;
-				q.y = 0.5 * num6;
-				q.z = (m21 + m12) * num3;
-				q.w = (m20 - m02) * num3;
-				return quaternion_d(q);
-			}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static quaternion_d RotateX (double angle) {
+			double s;
+			double c;
+			sincos(0.5 * angle, out s, out c);
+			return quaternion_d(s, 0.0, 0.0, c);
+		}
 
-			var num5 = sqrt(((1.0 + m22) - m00) - m11);
-			var num2 = 0.5 / num5;
-			q.x = (m20 + m02) * num2;
-			q.y = (m21 + m12) * num2;
-			q.z = 0.5 * num5;
-			q.w = (m01 - m10) * num2;
-			return quaternion_d(q);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static quaternion_d RotateY (double angle) {
+			double s;
+			double c;
+			sincos(0.5 * angle, out s, out c);
+			return quaternion_d(0.0, s, 0.0, c);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static quaternion_d RotateZ (double angle) {
+			double s;
+			double c;
+			sincos(0.5 * angle, out s, out c);
+			return quaternion_d(0.0, 0.0, s, c);
+		}
+
+		public static quaternion_d LookRotation (double3 forward, double3 up) {
+			double3 double3 = normalize(cross(up, forward));
+			return quaternion_d(double3x3(double3, cross(forward, double3), forward));
+		}
+
+		public static quaternion_d LookRotationSafe (double3 forward, double3 up) {
+			double x = dot(forward, forward);
+			double num1 = dot(up, up);
+			forward *= rsqrt(x);
+			up *= rsqrt(num1);
+			double3 double3_1 = cross(up, forward);
+			double num2 = dot(double3_1, double3_1);
+			double3 double3_2 = double3_1 * rsqrt(num2);
+			bool c = min(min(x, num1), num2) > 1.00000001800251E-35 &&
+			         max(max(x, num1), num2) < 1.00000004091848E+35 && (isfinite(x) && isfinite(num1)) &&
+			         isfinite(num2);
+			return quaternion_d(
+				select(
+					double4(0.0, 0.0, 0.0, 1.0),
+					quaternion_d(double3x3(double3_2, cross(forward, double3_2), forward)).value,
+					c));
 		}
 
 		public static implicit operator quaternion_d (quaternion q) {
@@ -282,6 +242,35 @@ namespace Unity.Mathematics {
 
 		public static implicit operator quaternion_d (double4 d) {
 			return quaternion_d(d);
+		}
+
+		public bool Equals (quaternion_d other) {
+			return value.Equals(other.value);
+		}
+
+		public override bool Equals (object obj) {
+			if (ReferenceEquals(null, obj)) return false;
+			return obj is quaternion_d && Equals((quaternion_d) obj);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public override string ToString () {
+			return string.Format(
+				"quaternion_d({0}f, {1}f, {2}f, {3}f)",
+				value.x,
+				value.y,
+				value.z,
+				value.w);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public string ToString (string format, IFormatProvider formatProvider) {
+			return string.Format(
+				"quaternion_d({0}f, {1}f, {2}f, {3}f)",
+				value.x.ToString(format, formatProvider),
+				value.y.ToString(format, formatProvider),
+				value.z.ToString(format, formatProvider),
+				value.w.ToString(format, formatProvider));
 		}
 	}
 
@@ -329,20 +318,20 @@ namespace Unity.Mathematics {
 			return quaternion_d(value);
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static quaternion_d mul (quaternion_d a, quaternion_d b) {
-			return quaternion_d(
-				a.value.wwww * b.value + (a.value.xyzx * b.value.wwwx + a.value.yzxy * b.value.zxyy) * double4(1.0f, 1.0f, 1.0f, -1.0f) -
-				a.value.zxyz * b.value.yzxz);
+			return quaternion_d(a.value.wwww * b.value + (a.value.xyzx * b.value.wwwx + a.value.yzxy * b.value.zxyy) * double4(1f, 1f, 1f, -1f) - a.value.zxyz * b.value.yzxz);
 		}
 
-		public static double3 mul (quaternion_d q, double3 vector) {
-			double3 t = 2 * cross(q.value.xyz, vector);
-			return vector + q.value.w * t + cross(q.value.xyz, t);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static double3 mul (quaternion_d q, double3 v) {
+			double3 y = 2.0 * cross(q.value.xyz, v);
+			return v + q.value.w * y + cross(q.value.xyz, y);
 		}
 
 		public static quaternion_d nlerp (quaternion_d q1, quaternion_d q2, double t) {
 			double dt = dot(q1, q2);
-			if (dt < 0.0f) {
+			if (dt < 0.0) {
 				q2.value = -q2.value;
 			}
 
@@ -351,47 +340,47 @@ namespace Unity.Mathematics {
 
 		public static quaternion_d slerp (quaternion_d q1, quaternion_d q2, double t) {
 			double dt = dot(q1, q2);
-			if (dt < 0.0f) {
+			if (dt < 0.0) {
 				dt = -dt;
 				q2.value = -q2.value;
 			}
 
-			if (dt < 0.9995f) {
+			if (dt < 0.9995) {
 				double angle = acos(dt);
-				double s = rsqrt(1.0f - dt * dt); // 1.0f / sin(angle)
-				double w1 = sin(angle * (1.0f - t)) * s;
+				double s = rsqrt(1.0 - dt * dt); // 1.0 / sin(angle)
+				double w1 = sin(angle * (1.0 - t)) * s;
 				double w2 = sin(angle * t) * s;
 				return quaternion_d(q1.value * w1 + q2.value * w2);
-			} else {
-				// if the angle is small, use linear interpolation
-				return nlerp(q1, q2, t);
 			}
+
+			// if the angle is small, use linear interpolation
+			return nlerp(q1, q2, t);
 		}
 
 		public static double3 forward (quaternion_d q) {
-			return mul(q, double3(0, 0, 1));
+			return mul(q, double3(0.0, 0.0, 1.0));
 		}
 
 		public static double3 up (quaternion_d q) {
-			return mul(q, double3(0, 1, 0));
+			return mul(q, double3(0.0, 1.0, 0.0));
 		}
 
 		// get unit quaternion from rotation matrix
 		// u, v, w must be ortho-normal.
 		public static quaternion_d matrixToQuat (double3 u, double3 v, double3 w) {
 			double4 q;
-			if (u.x >= 0f) {
+			if (u.x >= 0.0) {
 				double t = v.y + w.z;
-				if (t >= 0f)
-					q = new double4(v.z - w.y, w.x - u.z, u.y - v.x, 1f + u.x + t);
+				if (t >= 0.0)
+					q = new double4(v.z - w.y, w.x - u.z, u.y - v.x, 1.0 + u.x + t);
 				else
-					q = new double4(1f + u.x - t, u.y + v.x, w.x + u.z, v.z - w.y);
+					q = new double4(1.0 + u.x - t, u.y + v.x, w.x + u.z, v.z - w.y);
 			} else {
 				double t = v.y - w.z;
-				if (t >= 0f)
-					q = new double4(u.y + v.x, 1f - u.x + t, v.z + w.y, w.x - u.z);
+				if (t >= 0.0)
+					q = new double4(u.y + v.x, 1.0 - u.x + t, v.z + w.y, w.x - u.z);
 				else
-					q = new double4(w.x + u.z, v.z + w.y, 1f - u.x - t, u.y - v.x);
+					q = new double4(w.x + u.z, v.z + w.y, 1.0 - u.x - t, u.y - v.x);
 			}
 
 			return normalize(new quaternion_d(q));
