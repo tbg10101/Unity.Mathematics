@@ -3,7 +3,6 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace Unity.Mathematics {
-#pragma warning disable 659
     public struct ray : IEquatable<ray> {
         public float3 origin;
         public float3 direction;
@@ -28,10 +27,12 @@ namespace Unity.Mathematics {
             if (ReferenceEquals(null, obj)) return false;
             return obj is ray && Equals((ray) obj);
         }
-    }
-#pragma warning restore 659
 
-#pragma warning disable 659
+		public override int GetHashCode () {
+			return (int)(math.hash(origin) + math.hash(direction));
+		}
+    }
+
     public struct ray_d : IEquatable<ray_d> {
         public double3 origin;
         public double3 direction;
@@ -69,8 +70,11 @@ namespace Unity.Mathematics {
             if (ReferenceEquals(null, obj)) return false;
             return obj is ray_d && Equals((ray_d) obj);
         }
+
+        public override int GetHashCode () {
+            return 17 * (int)(math.hash(origin) + math.hash(direction));
+        }
     }
-#pragma warning restore 659
 
     public static partial class math_x {
         public static ray ray (float3 origin, float3 direction) {

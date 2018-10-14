@@ -2,7 +2,6 @@
 using System.Runtime.CompilerServices;
 
 namespace Unity.Mathematics {
-#pragma warning disable 659
     public struct bounds : IEquatable<bounds> {
         private float3 _center;
         public float3 center {
@@ -107,10 +106,12 @@ namespace Unity.Mathematics {
             if (ReferenceEquals(null, obj)) return false;
             return obj is bounds && Equals((bounds) obj);
         }
-    }
-#pragma warning restore 659
 
-#pragma warning disable 659
+        public override int GetHashCode () {
+            return (int)(math.hash(_center) + math.hash(_extents));
+        }
+    }
+
     public struct bounds_d : IEquatable<bounds_d> {
         private double3 _center;
         public double3 center {
@@ -231,8 +232,11 @@ namespace Unity.Mathematics {
             if (ReferenceEquals(null, obj)) return false;
             return obj is bounds_d && Equals((bounds_d) obj);
         }
+
+        public override int GetHashCode () {
+            return 17 * (int)(math.hash(_center) + math.hash(_extents));
+        }
     }
-#pragma warning restore 659
 
     public static partial class math_x {
         public static bounds bounds (float3 center, float3 extends) {

@@ -253,6 +253,10 @@ namespace Unity.Mathematics {
 			return obj is quaternion_d && Equals((quaternion_d) obj);
 		}
 
+		public override int GetHashCode () {
+			return 17 * (int)hash(this);
+		}
+
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public override string ToString () {
 			return string.Format(
@@ -307,7 +311,7 @@ namespace Unity.Mathematics {
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static double dot (quaternion_d a, quaternion_d b) {
-			return dot(a.value, b.value);
+			return math.dot(a.value, b.value);
 		}
 
 		public static quaternion_d normalize (quaternion_d q) {
