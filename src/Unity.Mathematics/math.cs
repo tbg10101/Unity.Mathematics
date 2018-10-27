@@ -172,21 +172,74 @@ namespace Unity.Mathematics {
 		}
 
 		// distancesq
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static float distanceSquared (float3 pt1, float3 pt2) {
 			return pt1.x * pt2.x + pt1.y * pt2.y + pt1.z * pt2.z;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static double distanceSquared (double3 pt1, double3 pt2) {
 			return pt1.x * pt2.x + pt1.y * pt2.y + pt1.z * pt2.z;
 		}
 
+		// inverse
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static float2 inverse (float2 v) {
+			return new float2 {
+				x = 1.0f / v.x,
+				y = 1.0f / v.y
+			};
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static float3 inverse (float3 v) {
+			return new float3 {
+				x = 1.0f / v.x,
+				y = 1.0f / v.y,
+				z = 1.0f / v.z
+			};
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static float4 inverse (float4 v) {
+			return new float4 {
+				x = 1.0f / v.x,
+				y = 1.0f / v.y,
+				z = 1.0f / v.z,
+				w = 1.0f / v.w
+			};
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static double2 inverse (double2 v) {
+			return new double2 {
+				x = 1.0 / v.x,
+				y = 1.0 / v.y
+			};
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static double3 inverse (double3 v) {
+			return new double3 {
+				x = 1.0 / v.x,
+				y = 1.0 / v.y,
+				z = 1.0 / v.z
+			};
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static double4 inverse (double4 v) {
+			return new double4 {
+				x = 1.0 / v.x,
+				y = 1.0 / v.y,
+				z = 1.0 / v.z,
+				w = 1.0 / v.w
+			};
+		}
+
 		// intersects
 		public static bool intersects (ray r, bounds box) {
-			float3 dirfrac = new float3 {
-				x = 1.0f / r.direction.x,
-				y = 1.0f / r.direction.y,
-				z = 1.0f / r.direction.z
-			};
+			float3 dirfrac = inverse(r.direction);
 
 			float t1 = (box.min.x - r.origin.x) * dirfrac.x;
 			float t2 = (box.max.x - r.origin.x) * dirfrac.x;
@@ -198,7 +251,7 @@ namespace Unity.Mathematics {
 			float tmin = max(max(min(t1, t2), min(t3, t4)), min(t5, t6));
 			float tmax = min(min(max(t1, t2), max(t3, t4)), max(t5, t6));
 
-			// if tmax < 0, ray (line) is intersecting AABB, but whole AABB is behing us
+			// if tmax < 0, ray (line) is intersecting AABB, but whole AABB is behind us
 			if (tmax < 0) {
 				return false;
 			}
@@ -208,11 +261,7 @@ namespace Unity.Mathematics {
 		}
 
 		public static bool intersects (ray_d r, bounds_d box) {
-			double3 dirfrac = new double3 {
-				x = 1.0 / r.direction.x,
-				y = 1.0 / r.direction.y,
-				z = 1.0 / r.direction.z
-			};
+			double3 dirfrac = inverse(r.direction);
 
 			double t1 = (box.min.x - r.origin.x) * dirfrac.x;
 			double t2 = (box.max.x - r.origin.x) * dirfrac.x;
@@ -224,13 +273,35 @@ namespace Unity.Mathematics {
 			double tmin = max(max(min(t1, t2), min(t3, t4)), min(t5, t6));
 			double tmax = min(min(max(t1, t2), max(t3, t4)), max(t5, t6));
 
-			// if tmax < 0, ray (line) is intersecting AABB, but whole AABB is behing us
+			// if tmax < 0, ray (line) is intersecting AABB, but whole AABB is behind us
 			if (tmax < 0) {
 				return false;
 			}
 
 			// if tmin <= tmax, ray intersects AABB
 			return tmin <= tmax;
+		}
+
+		public static bool intersects2 (ray r, bounds box) {
+			float3 invRayDir = inverse(r.direction);
+
+			float3 t0 = (box.max - r.origin) * invRayDir;
+			float3 t1 = (box.min - r.origin) * invRayDir;
+			float3 tmin = min(t0, t1);
+			float3 tmax = max(t0, t1);
+
+			return cmax(tmin) <= cmin(tmax);
+		}
+
+		public static bool intersects2 (ray_d r, bounds_d box) {
+			double3 invRayDir = inverse(r.direction);
+
+			double3 t0 = (box.max - r.origin) * invRayDir;
+			double3 t1 = (box.min - r.origin) * invRayDir;
+			double3 tmin = min(t0, t1);
+			double3 tmax = max(t0, t1);
+
+			return cmax(tmin) <= cmin(tmax);
 		}
 
 		public static bool intersectsLines (double2 l0p0, double2 l0p1, double2 l1p0, double2 l1p1, ref double2 result) {
