@@ -393,12 +393,12 @@ namespace Unity.Mathematics {
 		}
 
 		// http://geomalgorithms.com/a07-_distance.html#dist3D_Segment_to_Segment()
-		// you an test distance to a point by setting the first two parameters to the same vector (it doesn't work if the second pair ofcoordinates
+		// you an test distance to a point by setting the first two parameters to the same vector (it doesn't work if the second pair of coordinates
 		// are the same)
 		public static double3[] closestPointsOnSegments (double3 line1p0, double3 line1p1, double3 line2p0, double3 line2p1) {
 			const double smallNumber = 0.00000001;
 
-			if (all(line1p0.Equals(line1p1) & line2p0.Equals(line2p1))) {
+			if (line1p0.Equals(line1p1) && line2p0.Equals(line2p1)) {
 				return new[] {line1p0, line2p0};
 			}
 
@@ -490,7 +490,7 @@ namespace Unity.Mathematics {
 		}
 
 		public static float3[] closestPointsOnSegments (float3 line1p0, float3 line1p1, float3 line2p0, float3 line2p1) {
-			if (all(line1p0.Equals(line1p1) & line2p0.Equals(line2p1))) {
+			if (line1p0.Equals(line1p1) && line2p0.Equals(line2p1)) {
 				return new[] {line1p0, line2p0};
 			}
 
@@ -583,6 +583,18 @@ namespace Unity.Mathematics {
 
 		public static float4 toFloat4 (this Color c) {
 			return new float4(c.r, c.g, c.b, c.a);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static float normalizeAngle (float angle) {
+			float a = angle % 360.0f;
+			return a >= 0.0f ? a : (a + 360.0f);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static double normalizeAngle (double angle) {
+			double a = angle % 360.0;
+			return a >= 0.0 ? a : (a + 360.0);
 		}
 	}
 }
