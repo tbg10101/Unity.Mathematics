@@ -596,5 +596,13 @@ namespace Unity.Mathematics {
 			double a = angle % 360.0;
 			return a >= 0.0 ? a : (a + 360.0);
 		}
+
+		public static Quaternion toQuaternion (this quaternion q) {
+			return q;
+		}
+
+		public static Quaternion toNormalizedQuaternion (this quaternion q) {
+			return q.toQuaternion().normalized;
+		}
 	}
 }
