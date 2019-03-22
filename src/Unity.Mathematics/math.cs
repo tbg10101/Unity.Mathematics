@@ -4,17 +4,11 @@ using static Unity.Mathematics.math;
 
 namespace Unity.Mathematics {
 	public static partial class math_x {
-		public const float pi = 3.14159265358979f;
-		public const float infinity = float.PositiveInfinity;
-		public const float negativeInfinity = float.NegativeInfinity;
 		public const float deg2Rad = 0.01745329f;
 		public const float rad2Deg = 57.29578f;
 		private const float epsilon = 0.000001F;
 		public const float epsilon_normal = 1e-30f;
 
-		public const double pi_d = 3.14159265358979;
-		public const double infinity_d = double.PositiveInfinity;
-		public const double negativeInfinity_d = double.NegativeInfinity;
 		public const double deg2Rad_d = 0.01745329;
 		public const double rad2Deg_d = 57.29578;
 		private const double epsilon_d = 0.000001;
@@ -597,12 +591,34 @@ namespace Unity.Mathematics {
 			return a >= 0.0 ? a : (a + 360.0);
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static Quaternion toQuaternion (this quaternion q) {
 			return q;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static Quaternion toNormalizedQuaternion (this quaternion q) {
 			return q.toQuaternion().normalized;
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static float angularSize (float radius, float distance) {
+			return 2.0f * atan(radius / distance);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static double angularSize (double radius, double distance) {
+			return 2.0 * atan(radius / distance);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static float sphereAngularSize (float radius, float distance) {
+			return 2.0f * asin(radius / distance);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static double sphereAngularSize (double radius, double distance) {
+			return 2.0 * asin(radius / distance);
 		}
 	}
 }
